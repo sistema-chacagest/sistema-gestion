@@ -59,59 +59,375 @@ CUENTAS_GASTOS = [
 #  CONFIG STREAMLIT
 # ═══════════════════════════════════════════════════════════
 st.set_page_config(
-    page_title="Sistema de Gestión Empresarial",
-    page_icon="🏢",
+    page_title="Gestión Empresarial",
+    page_icon="◆",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 st.markdown("""
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-.main-header {
-    background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
-    padding: 20px 30px; border-radius: 12px; margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(26,35,126,0.3);
-}
-.main-header h1 { color: white; margin: 0; font-size: 1.7rem; font-weight: 700; }
-.main-header p  { color: rgba(255,255,255,0.8); margin: 4px 0 0 0; font-size: 0.88rem; }
-.section-header {
-    background: linear-gradient(90deg,#e8eaf6,#f5f5f5);
-    border-left: 4px solid #3949ab;
-    padding: 8px 14px; border-radius: 0 8px 8px 0; margin: 12px 0 10px 0;
-}
-.section-header h3 { margin: 0; color: #1a237e; font-size: 0.97rem; }
-.badge-success { background:#e8f5e9;color:#2e7d32;padding:2px 10px;border-radius:20px;font-size:0.77rem;font-weight:600; }
-.badge-warning { background:#fff8e1;color:#f57f17;padding:2px 10px;border-radius:20px;font-size:0.77rem;font-weight:600; }
-.badge-danger  { background:#ffebee;color:#c62828;padding:2px 10px;border-radius:20px;font-size:0.77rem;font-weight:600; }
-.badge-info    { background:#e3f2fd;color:#1565c0;padding:2px 10px;border-radius:20px;font-size:0.77rem;font-weight:600; }
-.badge-neutral { background:#f5f5f5;color:#424242;padding:2px 10px;border-radius:20px;font-size:0.77rem;font-weight:600; }
-.info-box    { background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:10px 14px;margin:6px 0; }
-.success-box { background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:10px 14px;margin:6px 0; }
-.warning-box { background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;margin:6px 0; }
-[data-testid="stSidebar"] { background: linear-gradient(180deg,#1a237e 0%,#283593 100%); }
-[data-testid="stSidebar"] * { color: white !important; }
-.stButton > button { border-radius: 8px !important; font-weight: 600 !important; }
+
+/* ── RESET & BASE ── */
+html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; }
+.main .block-container { padding-top: 1.5rem; padding-bottom: 2rem; }
 footer { visibility: hidden; }
+#MainMenu { visibility: hidden; }
+
+/* ── SIDEBAR ── */
+[data-testid="stSidebar"] {
+    background: #0a0f1e !important;
+    border-right: 1px solid rgba(255,255,255,0.06);
+}
+[data-testid="stSidebar"] > div:first-child { padding: 0; }
+
+/* hide default sidebar elements */
+[data-testid="stSidebar"] .stSelectbox,
+[data-testid="stSidebar"] label { display: none !important; }
+
+/* ── LOGO AREA ── */
+.sidebar-logo {
+    padding: 28px 22px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 8px;
+}
+.sidebar-logo .logo-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 12px;
+    box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+}
+.sidebar-logo h2 {
+    color: #f8fafc !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    letter-spacing: 0.5px;
+}
+.sidebar-logo p {
+    color: #64748b !important;
+    font-size: 0.72rem !important;
+    margin: 3px 0 0 !important;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+/* ── NAV SECTION LABEL ── */
+.nav-label {
+    color: #334155 !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 16px 22px 6px;
+}
+
+/* ── NAV BUTTONS ── */
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 22px;
+    margin: 2px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-decoration: none;
+    border: 1px solid transparent;
+}
+.nav-btn:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.08);
+}
+.nav-btn.active {
+    background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(139,92,246,0.15));
+    border-color: rgba(99,102,241,0.35);
+    box-shadow: 0 2px 12px rgba(99,102,241,0.15);
+}
+.nav-btn .nav-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+    background: rgba(255,255,255,0.05);
+}
+.nav-btn.active .nav-icon {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    box-shadow: 0 3px 10px rgba(99,102,241,0.4);
+}
+.nav-btn .nav-text {
+    color: #94a3b8 !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+}
+.nav-btn.active .nav-text {
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+}
+.nav-btn .nav-arrow {
+    margin-left: auto;
+    color: #334155;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+.nav-btn.active .nav-arrow, .nav-btn:hover .nav-arrow { opacity: 1; color: #6366f1; }
+
+/* ── SIDEBAR FOOTER ── */
+.sidebar-footer {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 16px 22px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    background: #0a0f1e;
+}
+.sidebar-footer p {
+    color: #334155 !important;
+    font-size: 0.7rem !important;
+    margin: 0 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* ── TOP HEADER ── */
+.top-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f1f5f9;
+}
+.top-header h1 {
+    font-size: 1.6rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    letter-spacing: -0.5px;
+}
+.top-header p {
+    color: #64748b !important;
+    font-size: 0.82rem !important;
+    margin: 3px 0 0 !important;
+}
+.header-badge {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white !important;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ── SECTION HEADER ── */
+.section-header {
+    display: flex; align-items: center; gap: 10px;
+    margin: 18px 0 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f1f5f9;
+}
+.section-header .sh-icon {
+    width: 30px; height: 30px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+}
+.section-header h3 {
+    margin: 0 !important;
+    color: #0f172a !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+}
+
+/* ── METRIC CARDS ── */
+[data-testid="metric-container"] {
+    background: white;
+    border: 1px solid #f1f5f9;
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s;
+}
+[data-testid="metric-container"]:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
+[data-testid="stMetricLabel"] { color: #64748b !important; font-size: 0.78rem !important; font-weight: 500 !important; text-transform: uppercase; letter-spacing: 0.5px; }
+[data-testid="stMetricValue"] { color: #0f172a !important; font-size: 1.45rem !important; font-weight: 800 !important; }
+
+/* ── BADGES ── */
+.badge-success { background:#dcfce7;color:#15803d;padding:3px 11px;border-radius:20px;font-size:0.75rem;font-weight:600;border:1px solid #bbf7d0; }
+.badge-warning { background:#fef9c3;color:#a16207;padding:3px 11px;border-radius:20px;font-size:0.75rem;font-weight:600;border:1px solid #fde68a; }
+.badge-danger  { background:#fee2e2;color:#b91c1c;padding:3px 11px;border-radius:20px;font-size:0.75rem;font-weight:600;border:1px solid #fecaca; }
+.badge-info    { background:#dbeafe;color:#1d4ed8;padding:3px 11px;border-radius:20px;font-size:0.75rem;font-weight:600;border:1px solid #bfdbfe; }
+.badge-neutral { background:#f1f5f9;color:#475569;padding:3px 11px;border-radius:20px;font-size:0.75rem;font-weight:600;border:1px solid #e2e8f0; }
+.badge-purple  { background:#ede9fe;color:#6d28d9;padding:3px 11px;border-radius:20px;font-size:0.75rem;font-weight:600;border:1px solid #ddd6fe; }
+
+/* ── INFO BOXES ── */
+.info-box    { background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px 16px;margin:8px 0;border-left:3px solid #3b82f6; }
+.success-box { background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;margin:8px 0;border-left:3px solid #22c55e; }
+.warning-box { background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;margin:8px 0;border-left:3px solid #f59e0b; }
+
+/* ── FORMS ── */
+.stTextInput > div > div > input,
+.stNumberInput > div > div > input,
+.stTextArea > div > div > textarea {
+    border-radius: 9px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 0.875rem !important;
+    transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+.stTextInput > div > div > input:focus,
+.stNumberInput > div > div > input:focus,
+.stTextArea > div > div > textarea:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12) !important;
+}
+.stSelectbox > div > div {
+    border-radius: 9px !important;
+    border: 1.5px solid #e2e8f0 !important;
+}
+label { color: #374151 !important; font-size: 0.82rem !important; font-weight: 600 !important; }
+
+/* ── BUTTONS ── */
+.stButton > button {
+    border-radius: 9px !important;
+    font-weight: 600 !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 0.875rem !important;
+    transition: all 0.18s ease !important;
+    letter-spacing: 0.2px;
+}
+.stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(99,102,241,0.35) !important;
+}
+.stButton > button[kind="primary"]:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px rgba(99,102,241,0.45) !important;
+}
+.stButton > button[kind="secondary"] {
+    border: 1.5px solid #e2e8f0 !important;
+    color: #374151 !important;
+    background: white !important;
+}
+.stButton > button[kind="secondary"]:hover {
+    border-color: #6366f1 !important;
+    color: #6366f1 !important;
+    background: #fafafe !important;
+}
+
+/* ── TABS ── */
+.stTabs [data-baseweb="tab-list"] {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 4px;
+    gap: 2px;
+    border: 1px solid #f1f5f9;
+}
+.stTabs [data-baseweb="tab"] {
+    border-radius: 7px !important;
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+    color: #64748b !important;
+    padding: 8px 16px !important;
+    font-family: 'Outfit', sans-serif !important;
+}
+.stTabs [aria-selected="true"] {
+    background: white !important;
+    color: #6366f1 !important;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08) !important;
+}
+
+/* ── DATAFRAME ── */
+[data-testid="stDataFrame"] { border-radius: 12px; overflow: hidden; border: 1px solid #f1f5f9; }
+.dataframe { font-family: 'Outfit', sans-serif !important; font-size: 0.83rem !important; }
+
+/* ── MAIN BG ── */
+.main { background: #fafbfd; }
 </style>
 """, unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════
-#  SIDEBAR
+#  SIDEBAR — NAVEGACIÓN ELEGANTE
 # ═══════════════════════════════════════════════════════════
-st.markdown("""
-<div class="main-header">
-    <h1>🏢 Sistema de Gestión Empresarial</h1>
-    <p>Ventas · Compras · Tesorería · Bancos · Reportes</p>
-</div>
-""", unsafe_allow_html=True)
+MENU_ITEMS = [
+    ("🏠", "Inicio",    "Panel de Control"),
+    ("💰", "Ventas",    "Clientes & Facturación"),
+    ("🛒", "Compras",   "Proveedores & Gastos"),
+    ("🏦", "Tesorería", "Pagos & Cobranzas"),
+    ("🏧", "Bancos",    "Movimientos & Cheques"),
+    ("📊", "Reportes",  "Balance & Análisis"),
+]
+
+if "modulo_activo" not in st.session_state:
+    st.session_state.modulo_activo = "Inicio"
 
 with st.sidebar:
-    st.markdown("### 📋 MENÚ PRINCIPAL")
-    st.markdown("---")
-    modulo = st.selectbox("Seleccionar módulo:", [
-        "🏠 Inicio", "💰 Ventas", "🛒 Compras",
-        "🏦 Tesorería", "🏧 Bancos", "📊 Reportes",
-    ])
+    # Logo
+    st.markdown("""
+    <div class="sidebar-logo">
+        <div class="logo-icon">◆</div>
+        <h2>GestorPRO</h2>
+        <p>Sistema de Gestión</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="nav-label">Navegación</div>', unsafe_allow_html=True)
+
+    for icon, nombre, desc in MENU_ITEMS:
+        activo = st.session_state.modulo_activo == nombre
+        css = "nav-btn active" if activo else "nav-btn"
+        st.markdown(f"""
+        <div class="{css}">
+            <div class="nav-icon">{icon}</div>
+            <div>
+                <div class="nav-text">{nombre}</div>
+            </div>
+            <div class="nav-arrow">›</div>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button(nombre, key=f"nav_{nombre}", use_container_width=True,
+                     help=desc, type="secondary"):
+            st.session_state.modulo_activo = nombre
+            st.rerun()
+
+    st.markdown("""
+    <div class="sidebar-footer">
+        <p>v1.0 · 2025 · GestorPRO</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+modulo_raw = st.session_state.modulo_activo
+modulo = f"🏠 {modulo_raw}" if modulo_raw == "Inicio" else \
+         f"💰 {modulo_raw}" if modulo_raw == "Ventas" else \
+         f"🛒 {modulo_raw}" if modulo_raw == "Compras" else \
+         f"🏦 {modulo_raw}" if modulo_raw == "Tesorería" else \
+         f"🏧 {modulo_raw}" if modulo_raw == "Bancos" else \
+         f"📊 {modulo_raw}"
+
+# ── TOP HEADER ──
+HEADER_MAP = {
+    "Inicio":    ("Panel de Control",  "Resumen ejecutivo del sistema"),
+    "Ventas":    ("Ventas",            "Clientes, facturación y cuentas corrientes"),
+    "Compras":   ("Compras",           "Proveedores, gastos y cuentas corrientes"),
+    "Tesorería": ("Tesorería",         "Órdenes de pago, cobranzas y cheques"),
+    "Bancos":    ("Bancos",            "Movimientos bancarios y conciliación"),
+    "Reportes":  ("Reportes",          "Balance general y análisis financiero"),
+}
+h_titulo, h_sub = HEADER_MAP.get(modulo_raw, ("Sistema", ""))
+st.markdown(f"""
+<div class="top-header">
+    <div>
+        <h1>{h_titulo}</h1>
+        <p>{h_sub}</p>
+    </div>
+    <span class="header-badge">◆ GestorPRO</span>
+</div>
+""", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════
 #  HELPERS UI
@@ -220,7 +536,7 @@ def ventas_clientes():
     st.markdown("### 👥 Gestión de Clientes")
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown('<div class="section-header"><h3>➕ Nuevo Cliente</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header"><div class="sh-icon">➕ </div><h3>Nuevo Cliente</h3></div>', unsafe_allow_html=True)
         with st.form("form_cli", clear_on_submit=True):
             rs   = st.text_input("Razón Social *")
             cuit = st.text_input("CUIT *", placeholder="XX-XXXXXXXX-X")
@@ -243,7 +559,7 @@ def ventas_clientes():
                         st.success(f"✅ Cliente '{rs.upper()}' guardado.")
                         st.rerun()
     with col2:
-        st.markdown('<div class="section-header"><h3>📋 Lista de Clientes</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header"><div class="sh-icon">📋 </div><h3>Lista de Clientes</h3></div>', unsafe_allow_html=True)
         clientes = load_data("clientes")
         buscar = st.text_input("🔍 Buscar", key="buscar_cli")
         lista = [c for c in clientes if buscar.lower() in c["razon_social"].lower() or buscar in c["cuit"]] if buscar else clientes
@@ -257,7 +573,7 @@ def ventas_facturacion():
         st.warning("⚠️ No hay clientes cargados."); return
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown('<div class="section-header"><h3>Datos del Comprobante</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header"><div class="sh-icon">Da</div><h3>tos del Comprobante</h3></div>', unsafe_allow_html=True)
         opts = {f"{c['razon_social']} — {c['cuit']}": c for c in clientes}
         cli  = opts[st.selectbox("Cliente *", list(opts.keys()))]
         cond = cli["condicion_iva"]
@@ -270,7 +586,7 @@ def ventas_facturacion():
         fvto = st.date_input("Fecha Vencimiento")
         conc = st.text_area("Concepto")
     with col2:
-        st.markdown('<div class="section-header"><h3>Importes</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header"><div class="sh-icon">Im</div><h3>portes</h3></div>', unsafe_allow_html=True)
         ali_opts = ["21%","10.5%","27%","Exento"] if cond=="Responsable Inscripto" else ["Exento"]
         ali  = st.selectbox("Alícuota IVA", ali_opts)
         neto = st.number_input("Importe Neto ($)", min_value=0.0, step=0.01, format="%.2f")
@@ -351,7 +667,7 @@ def compras_proveedores():
     st.markdown("### 🏪 Gestión de Proveedores")
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown('<div class="section-header"><h3>➕ Nuevo Proveedor</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header"><div class="sh-icon">➕ </div><h3>Nuevo Proveedor</h3></div>', unsafe_allow_html=True)
         with st.form("form_prov", clear_on_submit=True):
             rs   = st.text_input("Razón Social *")
             cuit = st.text_input("CUIT *")
@@ -373,7 +689,7 @@ def compras_proveedores():
                         st.success(f"✅ Proveedor '{rs.upper()}' guardado.")
                         st.rerun()
     with col2:
-        st.markdown('<div class="section-header"><h3>📋 Lista de Proveedores</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header"><div class="sh-icon">📋 </div><h3>Lista de Proveedores</h3></div>', unsafe_allow_html=True)
         provs  = load_data("proveedores")
         buscar = st.text_input("🔍 Buscar", key="buscar_prov")
         lista  = [p for p in provs if buscar.lower() in p["razon_social"].lower() or buscar in p["cuit"]] if buscar else provs
@@ -394,7 +710,7 @@ def compras_gastos():
     if not provs: st.warning("No hay proveedores."); return
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown('<div class="section-header"><h3>Datos del Comprobante</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header"><div class="sh-icon">Da</div><h3>tos del Comprobante</h3></div>', unsafe_allow_html=True)
         opts = {f"{p['razon_social']} — {p['cuit']}": p for p in provs}
         prov = opts[st.selectbox("Proveedor *", list(opts.keys()))]
         cond = prov["condicion_iva"]
@@ -407,7 +723,7 @@ def compras_gastos():
                    if prov.get("cuenta_gastos") in CUENTAS_GASTOS else 0)
         conc = st.text_area("Concepto")
     with col2:
-        st.markdown('<div class="section-header"><h3>Importes</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header"><div class="sh-icon">Im</div><h3>portes</h3></div>', unsafe_allow_html=True)
         es_exento = cond in ["Monotributista","Consumidor Final"]
         if es_exento:
             st.info("Proveedor Monotributista/CF → importe cargado como Exento.")
